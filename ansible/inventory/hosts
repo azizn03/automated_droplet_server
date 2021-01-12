@@ -1,0 +1,6 @@
+[centos]
+178.62.54.36 # centosbox
+[centos:vars]
+ansible_user=centos
+[localhost]
+127.0.0.1 ansible_connection=local

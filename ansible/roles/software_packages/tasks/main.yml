@@ -1,0 +1,80 @@
+---
+# tasks file for software_packages
+- name: yum update
+  shell: yum -y update
+- name: NodeSource yum repository
+  shell: curl -sL https://rpm.nodesource.com/setup_13.x | sudo bash -
+  tags: NodeSource repository
+- name: Install a list of packages
+  yum:
+    name:
+      - epel-release
+      - libvirt
+      - qemu-kvm
+      - virt-install
+      - virt-top
+      - libguestfs-tools
+      - bridge-utils
+      - nodejs
+      - wget
+      - yum-utils
+      - nano
+      - vim
+      - git
+      - zip
+      - unzip
+      - ansible
+  tags: yum-packages
+- name: Install Docker
+  shell: curl -fsSL https://get.docker.com/ | sh
+  tags: docker-packages
+- name: Install Docker-compose
+  shell: curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  tags: docker-packages
+- name: Apply Docker-compose Permissions
+  shell: chmod +x /usr/local/bin/docker-compose
+  tags: docker-packages
+- name: Apply Docker-compose Soft Link
+  shell: ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+  tags: docker-packages
+- name: reload service docker, in all cases
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+- name: reload service libvirtd, in all cases
+  systemd:
+    name: libvirtd
+    state: started
+    enabled: yes
+- name: add Darkeve to docker group
+  shell: usermod -aG docker darkeve
+  tags: Adding user to docker group
+- name: Install Kubectl
+  shell: curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  tags: kubectl-package
+- name: Apply Kubectl Permissions
+  shell: chmod +x ./kubectl
+  tags: kubectl-package
+- name: mv kubectl package to /local/bin/
+  shell: mv ./kubectl /usr/local/bin/kubectl
+  tags: kubectl-package
+- name: Apply kubectl Soft Link
+  shell: ln -s /usr/local/bin/kubectl /usr/bin/kubectl
+  tags: kubectl-package
+- name: curl minikube
+  shell: curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube
+  tags: minikube-package
+- name: Install minikube
+  shell: install minikube /usr/local/bin
+  tags: minikube-package
+- name: Install minikube
+  shell: ln -s /usr/local/bin/minikube /usr/bin/minikube
+  tags: minikube-package
+- name: Remove minikube Installer
+  shell: rm -f minikube
+  tags: minikube-package
+- name: add Darkeve to libvirt group
+  shell: usermod -aG libvirt darkeve
+  tags: Adding user to libvirt group
+...

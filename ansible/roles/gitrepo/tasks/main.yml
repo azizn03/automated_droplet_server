@@ -1,0 +1,15 @@
+---
+# tasks file for gitrepo    
+- name: Create git directory
+  shell: cd /home/darkeve/ && mkdir terraform
+  become_user: darkeve
+- name: Git Clone Repo
+  #shell: cd /home/darkeve/ &&  ssh-agent bash -c 'ssh-add /home/darkeve/.ssh/git.pem; git clone git@github.com:azizn03/terraform.git'
+  git:
+    repo: git@github.com:azizn03/terraform.git
+    dest: /home/darkeve/terraform
+    accept_hostkey: yes
+    #key_file: ~/.ssh/git.pem
+  become_user: darkeve
+  tags: Git_clone
+...
